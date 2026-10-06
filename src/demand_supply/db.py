@@ -3,11 +3,11 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Iterable
 
-from sqlalchemy import Boolean, DateTime, Float, Integer, MetaData, String, Table, Column, create_engine, insert
+from sqlalchemy import Boolean, Column, DateTime, Float, Integer, MetaData, String, Table, create_engine, insert
 from sqlalchemy.engine import Engine
 
 from .config import runtime_settings
-from .schemas import SaleEvent
+from .schemas import InventorySnapshot, SaleEvent
 
 metadata = MetaData()
 
@@ -55,6 +55,16 @@ def insert_sales(events: Iterable[SaleEvent], engine: Engine | None = None) -> i
         return 0
     with engine.begin() as conn:
         conn.execute(insert(sales), rows)
+    return len(rows)
+
+
+def insert_inventory(snapshots: Iterable[InventorySnapshot], engine: Engine | None = None) -> int:
+    engine = engine or init_db()
+    rows = [snapshot.model_dump() for snapshot in snapshots]
+    if not rows:
+        return 0
+    with engine.begin() as conn:
+        conn.execute(insert(inventory), rows)
     return len(rows)
 
 

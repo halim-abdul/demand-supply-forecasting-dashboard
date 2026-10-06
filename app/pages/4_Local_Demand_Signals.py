@@ -1,10 +1,14 @@
 from __future__ import annotations
+
 from pathlib import Path
+
 import pandas as pd
 import streamlit as st
-from auth import require_login, logout_button
 
-require_login(); logout_button()
+from auth import logout_button, require_login
+
+require_login()
+logout_button()
 st.title("🌦️ Göttingen local demand signals")
 
 events_path = Path("data/reference/goettingen_events_2026.csv")
