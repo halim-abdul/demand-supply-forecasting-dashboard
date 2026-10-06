@@ -1,0 +1,13 @@
+{
+  "name": "Goettingen Inventory Risk Alerts",
+  "nodes": [
+    {"parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 30}]}}, "id": "schedule", "name": "Every 30 Minutes", "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0,0]},
+    {"parameters": {"url": "={{$env.DEMAND_API_URL}}/health"}, "id":"health", "name":"Check API", "type":"n8n-nodes-base.httpRequest", "typeVersion":4.2, "position":[240,0]},
+    {"parameters": {"jsCode": "const rows=$json.inventory_risk || []; return rows.filter(x=>x.status==='SHORTAGE_RISK'||x.status==='OVERSTOCK').map(x=>({json:x}));"}, "id":"filter", "name":"High Risk Only", "type":"n8n-nodes-base.code", "typeVersion":2, "position":[480,0]},
+    {"parameters": {"method":"POST", "url":"={{$env.ALERT_WEBHOOK_URL}}", "sendBody":true, "contentType":"json", "jsonBody":"={{$json}}"}, "id":"alert", "name":"Send Alert", "type":"n8n-nodes-base.httpRequest", "typeVersion":4.2, "position":[720,0]}
+  ],
+  "connections": {"Every 30 Minutes":{"main":[[{"node":"Check API","type":"main","index":0}]]},"Check API":{"main":[[{"node":"High Risk Only","type":"main","index":0}]]},"High Risk Only":{"main":[[{"node":"Send Alert","type":"main","index":0}]]}},
+  "active": false,
+  "settings":{"executionOrder":"v1"},
+  "versionId":"goe-alert-v1"
+}

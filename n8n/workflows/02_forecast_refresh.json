@@ -1,0 +1,13 @@
+{
+  "name": "Goettingen Forecast Refresh",
+  "nodes": [
+    {"parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 6}]}}, "id": "schedule", "name": "Every 6 Hours", "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0]},
+    {"parameters": {"url": "https://api.open-meteo.com/v1/forecast", "sendQuery": true, "queryParameters": {"parameters": [{"name":"latitude","value":"51.5413"},{"name":"longitude","value":"9.9158"},{"name":"daily","value":"temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,wind_speed_10m_max,weather_code"},{"name":"timezone","value":"Europe/Berlin"},{"name":"forecast_days","value":"16"}]}}, "id": "weather", "name": "Fetch Weather", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [240, -100]},
+    {"parameters": {"method": "POST", "url": "={{$env.DEMAND_API_URL}}/api/v1/forecast/refresh", "sendBody": true, "contentType": "json", "jsonBody": "={\"store_id\":\"GOE-001\",\"horizon_days\":56}"}, "id": "forecast", "name": "Refresh Forecast", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [480, 0]},
+    {"parameters": {"jsCode": "return [{json:{refreshed_at:new Date().toISOString(),market:'Goettingen',status:'queued'}}];"}, "id": "audit", "name": "Audit Record", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [720, 0]}
+  ],
+  "connections": {"Every 6 Hours":{"main":[[{"node":"Fetch Weather","type":"main","index":0}]]},"Fetch Weather":{"main":[[{"node":"Refresh Forecast","type":"main","index":0}]]},"Refresh Forecast":{"main":[[{"node":"Audit Record","type":"main","index":0}]]}},
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "versionId": "goe-forecast-v1"
+}

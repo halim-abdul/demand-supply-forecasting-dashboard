@@ -1,0 +1,13 @@
+{
+  "name": "Goettingen Realtime Sales Ingestion",
+  "nodes": [
+    {"parameters": {"httpMethod": "POST", "path": "goe-pos-sale", "responseMode": "responseNode"}, "id": "webhook", "name": "POS Webhook", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0]},
+    {"parameters": {"jsCode": "const x=$json; if(!x.event_id||!x.product_id||!x.quantity) throw new Error('invalid sale'); return [{json:{...x, received_at:new Date().toISOString()}}];"}, "id": "validate", "name": "Validate Sale", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [240, 0]},
+    {"parameters": {"method": "POST", "url": "={{$env.DEMAND_API_URL}}/api/v1/sales", "sendBody": true, "contentType": "raw", "rawContentType": "application/json", "body": "={{JSON.stringify($json)}}"}, "id": "api", "name": "Demand API", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [480, 0]},
+    {"parameters": {"respondWith": "json", "responseBody": "={{ {accepted:true,event_id:$json.event_id || $('Validate Sale').item.json.event_id} }}"}, "id": "response", "name": "Respond", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.4, "position": [720, 0]}
+  ],
+  "connections": {"POS Webhook": {"main": [[{"node":"Validate Sale","type":"main","index":0}]]}, "Validate Sale": {"main": [[{"node":"Demand API","type":"main","index":0}]]}, "Demand API": {"main": [[{"node":"Respond","type":"main","index":0}]]}},
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "versionId": "goe-sales-v1"
+}
