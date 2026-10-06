@@ -1,0 +1,30 @@
+market:
+  name: Goettingen Supermarket Demand Lab
+  city: Goettingen
+  state: Niedersachsen
+  country: DE
+  latitude: 51.5413
+  longitude: 9.9158
+  timezone: Europe/Berlin
+  holiday_country: DE
+  holiday_subdivision: NI
+  currency: EUR
+  default_store_id: GOE-001
+forecast:
+  horizon_days: 56
+  prophet_interval_width: 0.90
+  seasonality_mode: multiplicative
+  min_history_days: 90
+  safety_stock_service_level: 0.95
+inventory:
+  review_period_days: 1
+  default_lead_time_days: 3
+  min_days_cover: 2
+  max_days_cover: 18
+realtime:
+  refresh_seconds: 30
+  sales_webhook_path: /api/v1/sales
+  forecast_webhook_path: /api/v1/forecast/refresh
+weather:
+  provider: open-meteo
+  forecast_days: 16
