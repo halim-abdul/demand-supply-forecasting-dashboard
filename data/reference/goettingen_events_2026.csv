@@ -1,0 +1,7 @@
+event,start_date,end_date,category,expected_footfall_lift,source
+Play Forward,2026-05-07,2026-05-10,festival,0.10,Goettingen Marketing
+Shopping Beats,2026-06-04,2026-06-04,shopping_event,0.14,Goettingen Marketing
+Nacht der Kultur,2026-06-13,2026-06-13,culture,0.18,Goettingen Marketing
+Goettinger Kultursommer,2026-07-04,2026-08-15,culture,0.06,Stadt Goettingen
+Gaenselieselfest,2026-09-27,2026-09-27,city_festival,0.22,Goettingen Marketing
+Christmas Market,2026-11-20,2026-12-29,christmas_market,0.12,Goettingen Marketing / configurable
